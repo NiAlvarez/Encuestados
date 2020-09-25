@@ -10,6 +10,10 @@ Controlador.prototype = {
     this.modelo.agregarPregunta(pregunta, respuestas);
   },
 
+  obtenerPregunta: function(id){
+    return this.modelo.obtenerPregunta(id);
+  },
+
   borrarPregunta: function(id){
     this.modelo.borrarPregunta(id);
   },
@@ -18,10 +22,8 @@ Controlador.prototype = {
     this.modelo.borrarTodo();
   },
 
-  editarPregunta: function(id, nuevoTextoPregunta){
-    if(nuevoTextoPregunta){
-      this.modelo.editarPregunta(id, nuevoTextoPregunta);
-    }
+  editarPregunta: function(id, pregunta, respuestas){
+    this.modelo.editarPregunta(id, pregunta, respuestas);
   },
 
   agregarVotos: function(nombrePregunta, respuestaSeleccionada){

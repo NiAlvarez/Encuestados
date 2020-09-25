@@ -41,7 +41,7 @@ VistaAdministrador.prototype = {
       class: 'list-group-item',
       text: pregunta.textoPregunta
     })
-    
+
     var interiorItem = $('.d-flex');
     var titulo = interiorItem.find('h5');
     titulo.text(pregunta.textoPregunta);
@@ -67,6 +67,7 @@ VistaAdministrador.prototype = {
 
     // Asociación de eventos a botones //
     e.botonAgregarPregunta.click(function(){
+      var id = parseInt(e.id.val());
       var value = e.pregunta.val();
       var respuestas = [];
 
@@ -80,7 +81,14 @@ VistaAdministrador.prototype = {
         }
       })
       contexto.limpiarFormulario();
-      contexto.controlador.agregarPregunta(value, respuestas);
+
+      if (id) {
+        contexto.controlador.editarPregunta(id, value, respuestas);
+      } else {
+        contexto.controlador.agregarPregunta(value, respuestas);
+      }
+
+      e.botonAgregarPregunta.html('Crear pregunta');
     });
 
     e.botonBorrarPregunta.click(function(){
@@ -94,12 +102,36 @@ VistaAdministrador.prototype = {
 
     e.botonEditarPregunta.click(function(){
       var id = parseInt($('.list-group-item.active').attr('id'));
-      var nuevoTextoPregunta = prompt('Editá el nombre de la pregunta');
-      contexto.controlador.editarPregunta(id, nuevoTextoPregunta);
+      var pregunta = contexto.controlador.obtenerPregunta(id);
+      console.log(pregunta);
+
+      if (pregunta) {
+        contexto.limpiarFormulario();
+        contexto.elementos.id.val(id);
+        contexto.elementos.pregunta.val(pregunta.textoPregunta);
+        for (var i = 0; i < pregunta.cantidadPorRespuesta.length - 1; i++) {
+          contexto.agregarRespuesta();
+        }
+        $('[name="option[]"]').each(function (index, value) {
+          if ($(value).parent().attr('id') !== 'optionTemplate') {
+            $(value).val(pregunta.cantidadPorRespuesta[index].textoRespuesta);
+          }
+        });
+
+        contexto.elementos.botonAgregarPregunta.html('Guardar pregunta');
+      }
     });
   },
 
+  agregarRespuesta: function () {
+    var $template = $('#optionTemplate');
+    var $clone = $template.clone().removeClass('hide').addClass('has-success').attr('id', "").insertBefore($template);
+    var $option = $clone.find('[name="option[]"]');
+    $('#localStorageForm').formValidation('addField', $option);
+  },
+
   limpiarFormulario: function(){
+    this.elementos.id.val('');
     $('.form-group.answer.has-feedback.has-success').remove();
-  }
+  },
 };
