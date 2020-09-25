@@ -1,9 +1,11 @@
 var modelo = new Modelo();
+
 var vistaAdmin = new VistaAdministrador(modelo, new Controlador(modelo), {
   'lista': $('#lista'),
   'botonEditarPregunta': $('#editarPregunta'),
   'botonBorrarPregunta': $('#borrarPregunta'),
   'borrarTodo': $('#borrarTodo'),
+  'id': $('#id'),
   'pregunta': $('#pregunta'),
   'respuesta': $('#respuesta'),
   'formulario': $('localStorageForm'),

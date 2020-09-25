@@ -36,7 +36,7 @@ Modelo.prototype = {
   borrarPregunta: function(id){
     this.preguntas = this.preguntas.filter(function(pregunta){
       return pregunta.id !== id;
-    }); 
+    });
     this.guardar();
     this.preguntaBorrada.notificar();
   },
@@ -47,14 +47,25 @@ Modelo.prototype = {
     this.todoBorrado.notificar();
   },
 
+  obtenerPregunta: function (id) {
+    var pregunta = this.preguntas.find(function(pregunta){
+      return pregunta.id === id;
+    });
+    return pregunta;
+  },
 
-  editarPregunta: function(id, nuevoTextoPregunta){
-   var preguntaAEditar = this.preguntas.find(function(pregunta){
+  editarPregunta: function(id, nombre, respuestas){
+    var preguntaAEditar = this.preguntas.find(function(pregunta){
         return pregunta.id === id;
    });
-   
    if(preguntaAEditar){
-    preguntaAEditar.textoPregunta = nuevoTextoPregunta;
+    preguntaAEditar.textoPregunta = nombre;
+    for(var i = 0; i < preguntaAEditar.cantidadPorRespuesta.length; i++) {
+      if(respuestas[i]) {
+        respuestas[i].cantidad = preguntaAEditar.cantidadPorRespuesta[i].cantidad;
+      }
+    }
+    preguntaAEditar.cantidadPorRespuesta = respuestas;
     this.guardar();
     this.preguntaEditada.notificar();
    }
@@ -69,13 +80,15 @@ Modelo.prototype = {
           }
         })
       }
-    }); 
+    });
     this.guardar();
     this.preguntaVotada.notificar();
   },
 
   // Se guardan las preguntas //
   guardar: function(){
+    console.log(modelo.preguntas);
+
     localStorage.setItem('preguntas', JSON.stringify(modelo.preguntas));
   },
 };
